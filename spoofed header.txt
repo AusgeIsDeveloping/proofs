@@ -1,0 +1,43 @@
+def download_pastebin_document(url: str) -> str:
+
+req = urllib.request.Request(
+
+url,
+
+headers = {"User-Agent": "Mozilla/5.0"}
+
+)
+
+# SSL off
+
+context = ssl.create_default_context()
+
+context.check_hostname = False
+
+context.verify_mode = ssl.CERT_NONE
+
+with urllib.request.urlopen(req, context=context) as res:
+
+return res.read().decode("utf-8")
+
+def extract_url(document: str, link_text: str) -> list:
+
+pattern = r'<a\s+(?:[^>]*?\s+)?href="([^"]+)"[^>]*>' + re.escape(link_text) + r'</a>'
+
+match = re.search(pattern, document)
+
+if match:
+
+href = match.group(1)
+
+return "https://pastebin.com/raw" + href
+
+else:
+
+return None
+
+# Signature verification stuff
+
+def extract_and_verify_payload_data(payload_data: str) -> bool:
+
+# Hard coded public key
